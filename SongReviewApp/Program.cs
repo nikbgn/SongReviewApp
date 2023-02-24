@@ -2,7 +2,9 @@ namespace SongReviewApp
 {
     using Microsoft.EntityFrameworkCore;
 
+    using SongReviewApp.Contracts;
     using SongReviewApp.Data;
+    using SongReviewApp.Repository;
 
     public class Program
     {
@@ -14,6 +16,7 @@ namespace SongReviewApp
 
             builder.Services.AddControllers();
             builder.Services.AddTransient<Seed>();
+            builder.Services.AddScoped<ISongRepository, SongRepository>();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
