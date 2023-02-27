@@ -10,6 +10,8 @@
         public MappingProfiles()
         {
             CreateMap<Song, SongDto>();
+            CreateMap<Genre, GenreDto>();
+            CreateMap<Country, CountryDto>();
         }
     }
 }
