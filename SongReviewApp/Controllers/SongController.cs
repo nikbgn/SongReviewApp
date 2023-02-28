@@ -11,7 +11,7 @@
 
     [Route("api/[controller]")]
     [ApiController]
-    public class SongController : Controller
+    public class SongController : ControllerBase
     {
         private readonly ISongRepository songRepository;
         private readonly IMapper mapper;

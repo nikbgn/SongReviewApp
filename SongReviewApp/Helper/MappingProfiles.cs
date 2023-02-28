@@ -12,6 +12,9 @@
             CreateMap<Song, SongDto>();
             CreateMap<Genre, GenreDto>();
             CreateMap<Country, CountryDto>();
+            CreateMap<Artist, ArtistDto>();
+            CreateMap<Review, ReviewDto>();
+            CreateMap<Reviewer, ReviewerDto>();
         }
     }
 }

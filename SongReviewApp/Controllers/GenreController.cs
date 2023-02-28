@@ -10,7 +10,7 @@
 
     [Route("api/[controller]")]
     [ApiController]
-    public class GenreController : Controller
+    public class GenreController : ControllerBase
     {
         private readonly IGenreRepository genreRepository;
         private readonly IMapper mapper;
