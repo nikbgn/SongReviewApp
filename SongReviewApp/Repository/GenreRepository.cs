@@ -9,7 +9,7 @@
     using SongReviewApp.Data;
     using SongReviewApp.Models;
 
-    public class GenreRepository : IGenreRepository
+    public class GenreRepository : IGenreRepository, ICommonDbOperations
     {
 
         private readonly ApplicationDbContext dbContext;
@@ -19,6 +19,20 @@
             this.dbContext = _dbContext;
         }
 
+        public async Task<bool> CreateGenre(Genre genre)
+        {
+            try
+            {
+                await dbContext.AddAsync(genre);
+                bool saveSuccess = await SaveChangesAsync();
+                return saveSuccess;
+            }
+            catch (Exception)
+            {
+                //TODO: Implement exception logic, add logging?
+                throw;
+            }
+        }
 
         public async Task<bool> GenreExists(int id)
         {
@@ -90,6 +104,12 @@
                 //TODO: Implement exception logic, add logging?
                 throw;
             }
+        }
+
+        public async Task<bool> SaveChangesAsync()
+        {
+            int saved = await dbContext.SaveChangesAsync();
+            return saved > 0 ? true : false;
         }
     }
 }

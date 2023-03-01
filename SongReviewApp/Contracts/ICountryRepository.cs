@@ -37,5 +37,13 @@
         /// <param name="id">Country id.</param>
         /// <returns>True / False</returns>
         Task<bool> CountryExists(int id);
+
+        /// <summary>
+        /// Creates a country.
+        /// </summary>
+
+        Task<bool> CreateCountry(Country country);
+
+
     }
 }

@@ -8,7 +8,7 @@
     using SongReviewApp.Data;
     using SongReviewApp.Models;
 
-    public class CountryRepository : ICountryRepository
+    public class CountryRepository : ICountryRepository, ICommonDbOperations
     {
 
         private readonly ApplicationDbContext dbContext;
@@ -27,6 +27,21 @@
                     .AnyAsync(c => c.Id == id);
 
                 return result;
+            }
+            catch (Exception)
+            {
+                //TODO: Implement exception logic, add logging?
+                throw;
+            }
+        }
+
+        public async Task<bool> CreateCountry(Country country)
+        {
+            try
+            {
+                await dbContext.AddAsync(country);
+                bool saveSuccess = await SaveChangesAsync();
+                return saveSuccess;
             }
             catch (Exception)
             {
@@ -112,6 +127,12 @@
                 //TODO: Implement exception logic, add logging?
                 throw;
             }
+        }
+
+        public async Task<bool> SaveChangesAsync()
+        {
+            int saved = await dbContext.SaveChangesAsync();
+            return saved > 0 ? true : false;
         }
     }
 }

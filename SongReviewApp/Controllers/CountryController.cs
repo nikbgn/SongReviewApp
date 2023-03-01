@@ -71,5 +71,48 @@
             return Ok(country);
         }
 
+
+        [HttpPost]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(400)]
+        public async Task<IActionResult> CreateCountry([FromBody] CountryDto countryCreate)
+        {
+            //NOTE: [FromBody] will pull the data from the request body.
+            if (countryCreate == null)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var countries = await countryRepository.GetCountries();
+
+            var country = countries
+                .Where(g => g.Name.Trim().ToUpper() == countryCreate.Name.Trim().ToUpper())
+                .FirstOrDefault();
+
+            if (country != null)
+            {
+                ModelState.AddModelError("", "Country already exists");
+                return StatusCode(422, ModelState);
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var countryMap = mapper.Map<Country>(countryCreate);
+
+            var countryCreatedSuccessfully = await countryRepository.CreateCountry(countryMap);
+
+            if (!countryCreatedSuccessfully)
+            {
+                ModelState.AddModelError("", "Something went wrong while creating new country.");
+                return StatusCode(500, ModelState);
+            }
+
+            return Ok("Successfully created genre.");
+
+        }
+
     }
 }

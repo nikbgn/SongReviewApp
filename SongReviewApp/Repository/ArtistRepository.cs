@@ -1,6 +1,7 @@
 ﻿namespace SongReviewApp.Repository
 {
     using System.Collections.Generic;
+    using System.Diagnostics.Metrics;
     using System.Threading.Tasks;
     using Microsoft.EntityFrameworkCore;
 
@@ -8,7 +9,7 @@
     using SongReviewApp.Data;
     using SongReviewApp.Models;
 
-    public class ArtistRepository : IArtistRepository
+    public class ArtistRepository : IArtistRepository, ICommonDbOperations
     {
 
         private readonly ApplicationDbContext dbContext;
@@ -27,6 +28,21 @@
                     .AnyAsync(a => a.Id == artistId);
 
                 return result;
+            }
+            catch (Exception)
+            {
+                //TODO: Implement exception logic, add logging?
+                throw;
+            }
+        }
+
+        public async Task<bool> CreateArtist(Artist artist)
+        {
+            try
+            {
+                await dbContext.AddAsync(artist);
+                bool saveSuccess = await SaveChangesAsync();
+                return saveSuccess;
             }
             catch (Exception)
             {
@@ -107,6 +123,12 @@
                 //TODO: Implement exception logic, add logging?
                 throw;
             }
+        }
+
+        public async Task<bool> SaveChangesAsync()
+        {
+            int saved = await dbContext.SaveChangesAsync();
+            return saved > 0 ? true : false;
         }
     }
 }

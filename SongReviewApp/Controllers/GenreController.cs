@@ -8,6 +8,7 @@
     using SongReviewApp.Dto;
     using SongReviewApp.Models;
 
+
     [Route("api/[controller]")]
     [ApiController]
     public class GenreController : ControllerBase
@@ -24,6 +25,7 @@
         }
 
 
+
         [HttpGet]
         [ProducesResponseType(200, Type = typeof(IEnumerable<Genre>))]
         public async Task<IActionResult> GetGenres()
@@ -35,6 +37,7 @@
 
             return Ok(songs);
         }
+
 
 
         [HttpGet("{genreId}")]
@@ -69,6 +72,48 @@
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
             return Ok(songs);
+        }
+
+        [HttpPost]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(400)]
+        public async Task<IActionResult> CreateGenre([FromBody]GenreDto genreCreate)
+        {
+            //NOTE: [FromBody] will pull the data from the request body.
+            if (genreCreate == null)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var genres = await genreRepository.GetGenres();
+
+            var genre = genres
+                .Where(g => g.Name.Trim().ToUpper() == genreCreate.Name.Trim().ToUpper())
+                .FirstOrDefault();
+
+            if(genre != null)
+            {
+                ModelState.AddModelError("", "Genre already exists");
+                return StatusCode(422, ModelState);
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var genreMap = mapper.Map<Genre>(genreCreate);
+
+            var genreCreatedSuccessfully = await genreRepository.CreateGenre(genreMap);
+
+            if (!genreCreatedSuccessfully)
+            {
+                ModelState.AddModelError("", "Something went wrong while creating new genre.");
+                return StatusCode(500, ModelState);
+            }
+
+            return Ok("Successfully created genre.");
+
         }
 
     }

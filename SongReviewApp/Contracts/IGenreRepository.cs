@@ -30,5 +30,12 @@
         /// <param name="id">Genre id</param>
         /// <returns>True / False</returns>
         Task<bool> GenreExists(int id);
+
+        /// <summary>
+        /// Creates a genre.
+        /// </summary>
+
+        Task<bool> CreateGenre(Genre genre);
+
     }
 }

@@ -37,5 +37,12 @@
         /// <param name="artistId">Artist id.</param>
         /// <returns>True / False</returns>
         Task<bool> ArtistExists(int artistId);
+
+        /// <summary>
+        /// Creates an artist.
+        /// </summary>
+
+        Task<bool> CreateArtist(Artist artist);
+
     }
 }
