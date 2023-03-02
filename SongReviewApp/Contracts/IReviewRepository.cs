@@ -30,5 +30,11 @@
         /// <param name="reviewId">Review id.</param>
         /// <returns>True / False</returns>
         Task<bool> ReviewExists(int reviewId);
+
+        /// <summary>
+        /// Creates a review.
+        /// </summary>
+        
+        Task<bool> CreateReview(Review review);
     }
 }

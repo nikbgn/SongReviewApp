@@ -8,13 +8,27 @@
     using SongReviewApp.Data;
     using SongReviewApp.Models;
 
-    public class ReviewerRepository : IReviewerRepository
+    public class ReviewerRepository : IReviewerRepository, ICommonDbOperations
     {
         private readonly ApplicationDbContext dbContext;
 
         public ReviewerRepository(ApplicationDbContext _dbContext)
         {
             this.dbContext = _dbContext;
+        }
+
+        public async Task<bool> CreateReviewer(Reviewer reviewer)
+        {
+            try
+            {
+                await dbContext.AddAsync(reviewer);
+                return await SaveChangesAsync();
+            }
+            catch (Exception)
+            {
+                //TODO: Implement exception logic, add logging?
+                throw;
+            }
         }
 
         public async Task<Reviewer> GetReviewer(int reviewerId)
@@ -84,5 +98,12 @@
                 throw;
             }
         }
+        
+        public async Task<bool> SaveChangesAsync()
+        {
+            int saved = await dbContext.SaveChangesAsync();
+            return saved > 0 ? true : false;
+        }
+
     }
 }

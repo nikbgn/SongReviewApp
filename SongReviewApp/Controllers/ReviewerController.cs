@@ -79,6 +79,51 @@
 
             return Ok(reviews);
         }
+
+
+        [HttpPost]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(400)]
+        public async Task<IActionResult> CreateReviewer([FromBody] ReviewerDto reviewerCreate)
+        {
+            if (reviewerCreate == null)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var reviewsCollection = await reviewerRepository.GetReviewers();
+
+            var reviewer = reviewsCollection
+                .Where(r => r.Id == reviewerCreate.Id)
+                .FirstOrDefault();
+
+            if (reviewer != null)
+            {
+                ModelState.AddModelError("", "Reviewer already exists");
+                return StatusCode(422, ModelState);
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var reviewMap = mapper.Map<Reviewer>(reviewerCreate);
+
+          
+
+            var artistCreatedSuccessfully = await reviewerRepository.CreateReviewer(reviewMap);
+
+            if (!artistCreatedSuccessfully)
+            {
+                ModelState.AddModelError("", "Something went wrong while creating new reviewer.");
+                return StatusCode(500, ModelState);
+            }
+
+            return Ok("Successfully created reviewer.");
+
+        }
+
     }
 
 

@@ -8,7 +8,7 @@
     using SongReviewApp.Data;
     using SongReviewApp.Models;
 
-    public class ReviewRepository : IReviewRepository
+    public class ReviewRepository : IReviewRepository, ICommonDbOperations
     {
 
         private readonly ApplicationDbContext dbContext;
@@ -16,6 +16,21 @@
         public ReviewRepository(ApplicationDbContext _dbContext)
         {
             this.dbContext = _dbContext;
+        }
+
+        public async Task<bool> CreateReview(Review review)
+        {
+            try
+            {
+                await dbContext.AddAsync(review);
+                var savedSuccessfully = await SaveChangesAsync();
+                return savedSuccessfully;
+            }
+            catch (Exception)
+            {
+                //TODO: Implement exception logic, add logging?
+                throw;
+            }
         }
 
         public async Task<Review> GetReview(int reviewId)
@@ -87,6 +102,12 @@
                 //TODO: Implement exception logic, add logging?
                 throw;
             }
+        }
+
+        public async Task<bool> SaveChangesAsync()
+        {
+            int saved = await dbContext.SaveChangesAsync();
+            return saved > 0 ? true : false;
         }
     }
 }

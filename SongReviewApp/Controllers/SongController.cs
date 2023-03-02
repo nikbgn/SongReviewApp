@@ -59,5 +59,51 @@
 
 
 
+        [HttpPost]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(400)]
+        public async Task<IActionResult> CreateSong([FromBody] SongDto songCreate, [FromQuery] int artistId, [FromQuery] int genreId)
+        {
+            //NOTE: [FromBody] will pull the data from the request body.
+            //NOTE: [FromQuery] will pull the data from the url.
+            if (songCreate == null)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var songsCollection = await songRepository.GetSongs();
+
+            var song = songsCollection
+                .Where(g => g.Name.Trim().ToUpper() == songCreate.Name.Trim().ToUpper())
+                .FirstOrDefault();
+
+            if (song != null)
+            {
+                ModelState.AddModelError("", "Song already exists");
+                return StatusCode(422, ModelState);
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var songMap = mapper.Map<Song>(songCreate);
+           
+
+
+            var artistCreatedSuccessfully = await songRepository.CreateSong(artistId, genreId, songMap);
+
+            if (!artistCreatedSuccessfully)
+            {
+                ModelState.AddModelError("", "Something went wrong while creating new song.");
+                return StatusCode(500, ModelState);
+            }
+
+            return Ok("Successfully created song.");
+
+        }
+
+
     }
 }

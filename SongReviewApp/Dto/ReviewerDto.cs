@@ -10,6 +10,5 @@
 
         public string LastName { get; set; } = null!;
 
-        public ICollection<Review> Reviews { get; set; }
     }
 }

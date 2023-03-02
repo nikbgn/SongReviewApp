@@ -14,13 +14,19 @@
     public class ReviewController : ControllerBase
     {
         private readonly IReviewRepository reviewRepository;
+        private readonly ISongRepository songRepository;
+        private readonly IReviewerRepository reviewerRepository;
         private readonly IMapper mapper;
 
         public ReviewController(
             IReviewRepository _reviewRepository,
+            ISongRepository _songRepository,
+            IReviewerRepository _reviewerRepository,
             IMapper _mapper)
         {
             this.reviewRepository = _reviewRepository;
+            this.songRepository = _songRepository;
+            this.reviewerRepository = _reviewerRepository;
             this.mapper = _mapper;
         }
 
@@ -71,6 +77,50 @@
             }
 
             return Ok(reviews);
+        }
+
+        [HttpPost]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(400)]
+        public async Task<IActionResult> CreateReview([FromBody] ReviewDto reviewCreate, [FromQuery] int reviewerId, [FromQuery] int songId)
+        {
+            if (reviewCreate == null)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var reviewsCollection = await reviewRepository.GetReviews();
+
+            var review = reviewsCollection
+                .Where(r => r.Id == reviewCreate.Id)
+                .FirstOrDefault();
+
+            if (review != null)
+            {
+                ModelState.AddModelError("", "Review already exists");
+                return StatusCode(422, ModelState);
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var reviewMap = mapper.Map<Review>(reviewCreate);
+
+            reviewMap.Song = await songRepository.GetSongById(songId);
+            reviewMap.Reviewer = await reviewerRepository.GetReviewer(reviewerId);
+
+            var artistCreatedSuccessfully = await reviewRepository.CreateReview(reviewMap);
+
+            if (!artistCreatedSuccessfully)
+            {
+                ModelState.AddModelError("", "Something went wrong while creating new review.");
+                return StatusCode(500, ModelState);
+            }
+
+            return Ok("Successfully created review.");
+
         }
     }
 }

@@ -10,6 +10,7 @@
         public MappingProfiles()
         {
             CreateMap<Song, SongDto>();
+            CreateMap<SongDto, Song>();
 
             CreateMap<Genre, GenreDto>();
             CreateMap<GenreDto, Genre>();
@@ -21,8 +22,10 @@
             CreateMap<ArtistDto, Artist>();
 
             CreateMap<Review, ReviewDto>();
+            CreateMap<ReviewDto, Review>();
 
             CreateMap<Reviewer, ReviewerDto>();
+            CreateMap<ReviewerDto, Reviewer>();
         }
     }
 }

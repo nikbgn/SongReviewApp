@@ -31,5 +31,10 @@
         /// <returns>True / False</returns>
         Task<bool> SongExists(int id);
 
+        /// <summary>
+        /// Creates a song.
+        /// </summary>
+
+        Task<bool> CreateSong(int artistId, int genreId, Song song);
     }
 }
