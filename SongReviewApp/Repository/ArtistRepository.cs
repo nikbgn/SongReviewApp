@@ -130,5 +130,11 @@
             int saved = await dbContext.SaveChangesAsync();
             return saved > 0 ? true : false;
         }
+
+        public async Task<bool> UpdateArtist(Artist artist)
+        {
+            dbContext.Update(artist);
+            return await SaveChangesAsync();
+        }
     }
 }

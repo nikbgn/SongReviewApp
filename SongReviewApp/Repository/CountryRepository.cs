@@ -134,5 +134,11 @@
             int saved = await dbContext.SaveChangesAsync();
             return saved > 0 ? true : false;
         }
+
+        public async Task<bool> UpdateCountry(Country country)
+        {
+            dbContext.Update(country);
+            return await SaveChangesAsync();
+        }
     }
 }

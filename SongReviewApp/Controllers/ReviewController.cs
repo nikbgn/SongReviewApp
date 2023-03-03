@@ -122,5 +122,34 @@
             return Ok("Successfully created review.");
 
         }
+
+        [HttpPut("{reviewId}")]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(404)]
+        public async Task<IActionResult> UpdateReview(int reviewId, [FromBody] ReviewDto updatedReview)
+        {
+            if (updatedReview == null) return BadRequest(ModelState);
+
+            if (reviewId != updatedReview.Id) return BadRequest(ModelState);
+
+            var reviewExists = await reviewRepository.ReviewExists(reviewId);
+
+            if (!reviewExists) return NotFound();
+
+            if (!ModelState.IsValid) return BadRequest();
+
+            var reviewMap = mapper.Map<Review>(updatedReview);
+
+            var reviewUpdated = await reviewRepository.UpdateReview(reviewMap);
+
+            if (!reviewUpdated)
+            {
+                ModelState.AddModelError("", "Something went wrong.");
+                return StatusCode(500, ModelState);
+            }
+
+            return NoContent();
+        }
     }
 }

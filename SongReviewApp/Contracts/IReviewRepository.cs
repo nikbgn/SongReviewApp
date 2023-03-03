@@ -36,5 +36,11 @@
         /// </summary>
         
         Task<bool> CreateReview(Review review);
+
+        /// <summary>
+        /// Updates review.
+        /// </summary>
+
+        Task<bool> UpdateReview(Review review);
     }
 }

@@ -116,5 +116,34 @@
 
         }
 
+        [HttpPut("{genreId}")]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(404)]
+        public async Task<IActionResult> UpdateGenre(int genreId, [FromBody]GenreDto updatedGenre)
+        {
+            if (updatedGenre == null) return BadRequest(ModelState);
+
+            if(genreId != updatedGenre.Id) return BadRequest(ModelState);
+
+            var genreExists = await genreRepository.GenreExists(genreId);
+
+            if (!genreExists) return NotFound();
+
+            if (!ModelState.IsValid) return BadRequest();
+
+            var genreMap = mapper.Map<Genre>(updatedGenre);
+
+            var genreUpdated = await genreRepository.UpdateGenre(genreMap);
+
+            if (!genreUpdated)
+            {
+                ModelState.AddModelError("", "Something went wrong.");
+                return StatusCode(500, ModelState);
+            }
+
+            return NoContent();
+        }
+
     }
 }

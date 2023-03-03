@@ -14,13 +14,16 @@
     public class SongController : ControllerBase
     {
         private readonly ISongRepository songRepository;
+        private readonly IReviewRepository reviewRepository;
         private readonly IMapper mapper;
 
         public SongController(
             ISongRepository _songRepository,
+            IReviewRepository _reviewRepository,
             IMapper _mapper)
         {
             this.songRepository = _songRepository;
+            this.reviewRepository = _reviewRepository;
             this.mapper = _mapper;
         }
 
@@ -102,6 +105,39 @@
 
             return Ok("Successfully created song.");
 
+        }
+
+        [HttpPut("{songId}")]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(404)]
+        public async Task<IActionResult> UpdateSong(
+            int songId, 
+            [FromQuery] int artistId, 
+            [FromQuery] int genreId,
+            [FromBody] SongDto updatedSong)
+        {
+            if (updatedSong == null) return BadRequest(ModelState);
+
+            if (artistId != updatedSong.Id) return BadRequest(ModelState);
+
+            var songExists = await songRepository.SongExists(artistId);
+
+            if (!songExists) return NotFound();
+
+            if (!ModelState.IsValid) return BadRequest();
+
+            var songMap = mapper.Map<Song>(updatedSong);
+
+            var artistUpdated = await songRepository.UpdateSong(artistId,genreId, songMap);
+
+            if (!artistUpdated)
+            {
+                ModelState.AddModelError("", "Something went wrong.");
+                return StatusCode(500, ModelState);
+            }
+
+            return NoContent();
         }
 
 

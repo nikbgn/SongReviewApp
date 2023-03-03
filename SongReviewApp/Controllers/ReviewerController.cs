@@ -124,6 +124,35 @@
 
         }
 
+        [HttpPut("{reviewerId}")]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(404)]
+        public async Task<IActionResult> UpdateReviewer(int reviewerId, [FromBody] ReviewerDto updatedReviewer)
+        {
+            if (updatedReviewer == null) return BadRequest(ModelState);
+
+            if (reviewerId != updatedReviewer.Id) return BadRequest(ModelState);
+
+            var reviewerExists = await reviewerRepository.ReviewerExists(reviewerId);
+
+            if (!reviewerExists) return NotFound();
+
+            if (!ModelState.IsValid) return BadRequest();
+
+            var reviewerMap = mapper.Map<Reviewer>(updatedReviewer);
+
+            var reviewerUpdated = await reviewerRepository.UpdateReviewer(reviewerMap);
+
+            if (!reviewerUpdated)
+            {
+                ModelState.AddModelError("", "Something went wrong.");
+                return StatusCode(500, ModelState);
+            }
+
+            return NoContent();
+        }
+
     }
 
 

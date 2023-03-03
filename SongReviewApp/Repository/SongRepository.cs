@@ -139,6 +139,12 @@
                 throw;
             }
         }
+
+        public async Task<bool> UpdateSong(int artistId, int genreId, Song song)
+        {
+            dbContext.Update(song);
+            return await SaveChangesAsync();
+        }
     }
 }
   

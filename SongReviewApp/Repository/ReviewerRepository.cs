@@ -105,5 +105,10 @@
             return saved > 0 ? true : false;
         }
 
+        public async Task<bool> UpdateReviewer(Reviewer reviewer)
+        {
+            dbContext.Update(reviewer);
+            return await SaveChangesAsync();
+        }
     }
 }

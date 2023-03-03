@@ -1,5 +1,7 @@
 ﻿namespace SongReviewApp.Contracts
 {
+    using System.ComponentModel;
+
     using SongReviewApp.Models;
 
     public interface IGenreRepository
@@ -36,6 +38,12 @@
         /// </summary>
 
         Task<bool> CreateGenre(Genre genre);
+
+        /// <summary>
+        /// Updates information about genre.
+        /// </summary>
+
+        Task<bool> UpdateGenre(Genre genre);
 
     }
 }

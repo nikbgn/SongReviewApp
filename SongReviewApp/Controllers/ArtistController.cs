@@ -132,5 +132,34 @@
             return Ok("Successfully created artist.");
 
         }
+
+        [HttpPut("{artistId}")]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(404)]
+        public async Task<IActionResult> UpdateArtist(int artistId, [FromBody] ArtistDto updatedArtist)
+        {
+            if (updatedArtist == null) return BadRequest(ModelState);
+
+            if (artistId != updatedArtist.Id) return BadRequest(ModelState);
+
+            var artistExists = await artistRepository.ArtistExists(artistId);
+
+            if (!artistExists) return NotFound();
+
+            if (!ModelState.IsValid) return BadRequest();
+
+            var artistMap = mapper.Map<Artist>(updatedArtist);
+
+            var genreUpdated = await artistRepository.UpdateArtist(artistMap);
+
+            if (!genreUpdated)
+            {
+                ModelState.AddModelError("", "Something went wrong.");
+                return StatusCode(500, ModelState);
+            }
+
+            return NoContent();
+        }
     }
 }

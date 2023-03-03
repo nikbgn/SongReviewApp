@@ -111,5 +111,11 @@
             int saved = await dbContext.SaveChangesAsync();
             return saved > 0 ? true : false;
         }
+
+        public async Task<bool> UpdateGenre(Genre genre)
+        {
+            dbContext.Update(genre);
+            return await SaveChangesAsync();
+        }
     }
 }

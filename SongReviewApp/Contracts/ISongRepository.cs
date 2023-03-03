@@ -36,5 +36,11 @@
         /// </summary>
 
         Task<bool> CreateSong(int artistId, int genreId, Song song);
+
+        /// <summary>
+        /// Updates song information.
+        /// </summary>
+
+        Task<bool> UpdateSong(int artistId, int genreId, Song song);
     }
 }

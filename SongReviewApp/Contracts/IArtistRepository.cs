@@ -44,5 +44,11 @@
 
         Task<bool> CreateArtist(Artist artist);
 
+        /// <summary>
+        /// Updates artist.
+        /// </summary>
+
+        Task<bool> UpdateArtist(Artist artist);
+
     }
 }

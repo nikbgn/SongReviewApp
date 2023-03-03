@@ -114,5 +114,34 @@
 
         }
 
+        [HttpPut("{countryId}")]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(404)]
+        public async Task<IActionResult> UpdateCountry(int countryId, [FromBody] CountryDto updatedCountry)
+        {
+            if (updatedCountry == null) return BadRequest(ModelState);
+
+            if (countryId != updatedCountry.Id) return BadRequest(ModelState);
+
+            var countryExists = await countryRepository.CountryExists(countryId);
+
+            if (!countryExists) return NotFound();
+
+            if (!ModelState.IsValid) return BadRequest();
+
+            var countryMap = mapper.Map<Country>(updatedCountry);
+
+            var countryUpdated = await countryRepository.UpdateCountry(countryMap);
+
+            if (!countryUpdated)
+            {
+                ModelState.AddModelError("", "Something went wrong.");
+                return StatusCode(500, ModelState);
+            }
+
+            return NoContent();
+        }
+
     }
 }

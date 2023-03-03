@@ -44,6 +44,10 @@
 
         Task<bool> CreateCountry(Country country);
 
+        /// <summary>
+        /// Updates a country
+        /// </summary>
 
+        Task<bool> UpdateCountry(Country country);
     }
 }

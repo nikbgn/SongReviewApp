@@ -109,5 +109,11 @@
             int saved = await dbContext.SaveChangesAsync();
             return saved > 0 ? true : false;
         }
+
+        public async Task<bool> UpdateReview(Review review)
+        {
+            dbContext.Update(review);
+            return await SaveChangesAsync();
+        }
     }
 }
