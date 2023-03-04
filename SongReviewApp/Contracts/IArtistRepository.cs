@@ -50,5 +50,11 @@
 
         Task<bool> UpdateArtist(Artist artist);
 
+        /// <summary>
+        /// Deletes artist
+        /// </summary>
+
+        Task<bool> DeleteArtist(Artist artist);
+
     }
 }

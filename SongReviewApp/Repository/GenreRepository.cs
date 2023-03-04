@@ -34,6 +34,12 @@
             }
         }
 
+        public async Task<bool> DeleteGenre(Genre genre)
+        {
+            dbContext.Remove(genre);
+            return await SaveChangesAsync();
+        }
+
         public async Task<bool> GenreExists(int id)
         {
             try

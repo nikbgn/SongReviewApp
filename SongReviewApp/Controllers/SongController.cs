@@ -140,6 +140,32 @@
             return NoContent();
         }
 
+        [HttpDelete("{songId}")]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(404)]
+        public async Task<IActionResult> DeleteSong(int songId)
+        {
+            var soungExists = await songRepository.SongExists(songId);
+
+            if (!soungExists) return NotFound();
+
+            var songToDelete = await songRepository.GetSongById(songId);
+
+            if (!ModelState.IsValid) return BadRequest();
+
+
+            var songDeleted = await songRepository.DeleteSong(songToDelete);
+
+            if (!songDeleted)
+            {
+                ModelState.AddModelError("", "Something went wrong.");
+                return StatusCode(500, ModelState);
+            }
+
+            return NoContent();
+        }
+
 
     }
 }

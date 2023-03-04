@@ -161,5 +161,32 @@
 
             return NoContent();
         }
+
+
+        [HttpDelete("{artistId}")]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(404)]
+        public async Task<IActionResult> DeleteArtist(int artistId)
+        {
+            var artistExists = await artistRepository.ArtistExists(artistId);
+
+            if (!artistExists) return NotFound();
+
+            var artistToDelete = await artistRepository.GetArtistById(artistId);
+
+            if (!ModelState.IsValid) return BadRequest();
+
+
+            var artistDeleted = await artistRepository.DeleteArtist(artistToDelete);
+
+            if (!artistDeleted)
+            {
+                ModelState.AddModelError("", "Something went wrong.");
+                return StatusCode(500, ModelState);
+            }
+
+            return NoContent();
+        }
     }
 }

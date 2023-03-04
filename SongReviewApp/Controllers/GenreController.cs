@@ -145,5 +145,30 @@
             return NoContent();
         }
 
+        [HttpDelete("{genreId}")]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(404)]
+        public async Task<IActionResult> DeleteGenre(int genreId)
+        {
+            var genreExists = await genreRepository.GenreExists(genreId);
+
+            if (!genreExists) return NotFound();
+
+            var genreToDelete = await genreRepository.GetGenreById(genreId);
+
+            if (!ModelState.IsValid) return BadRequest();
+
+
+            var genreDeleted = await genreRepository.DeleteGenre(genreToDelete);
+
+            if (!genreDeleted)
+            {
+                ModelState.AddModelError("", "Something went wrong.");
+                return StatusCode(500, ModelState);
+            }
+
+            return NoContent();
+        }
     }
 }

@@ -57,6 +57,12 @@
             }
         }
 
+        public async Task<bool> DeleteSong(Song song)
+        {
+            dbContext.Remove(song);
+            return await SaveChangesAsync();
+        }
+
         public async Task<Song> GetSongById(int id)
         {
             try

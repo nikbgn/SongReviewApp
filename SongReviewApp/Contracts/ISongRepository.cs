@@ -42,5 +42,7 @@
         /// </summary>
 
         Task<bool> UpdateSong(int artistId, int genreId, Song song);
+
+        Task<bool> DeleteSong(Song song);
     }
 }

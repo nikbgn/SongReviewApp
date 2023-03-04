@@ -49,5 +49,10 @@
         /// </summary>
 
         Task<bool> UpdateCountry(Country country);
+        /// <summary>
+        /// Deletes a country.
+        /// </summary>
+
+        Task<bool> DeleteCountry(Country country);
     }
 }

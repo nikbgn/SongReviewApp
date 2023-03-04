@@ -50,6 +50,12 @@
             }
         }
 
+        public async Task<bool> DeleteCountry(Country country)
+        {
+            dbContext.Remove(country);
+            return await SaveChangesAsync();
+        }
+
         public async Task<ICollection<Artist>> GetArtistsFromCountry(int countryId)
         {
             try

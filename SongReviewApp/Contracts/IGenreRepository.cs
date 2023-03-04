@@ -45,5 +45,11 @@
 
         Task<bool> UpdateGenre(Genre genre);
 
+        /// <summary>
+        /// Deletes a genre.
+        /// </summary>
+        
+        Task<bool> DeleteGenre(Genre genre);
+
     }
 }

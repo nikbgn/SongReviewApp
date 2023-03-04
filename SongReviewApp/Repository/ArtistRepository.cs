@@ -51,6 +51,12 @@
             }
         }
 
+        public async Task<bool> DeleteArtist(Artist artist)
+        {
+            dbContext.Remove(artist);
+            return await SaveChangesAsync();
+        }
+
         public async Task<Artist> GetArtistById(int artistId)
         {
             try

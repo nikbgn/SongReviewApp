@@ -143,5 +143,31 @@
             return NoContent();
         }
 
+        [HttpDelete("{countryId}")]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(404)]
+        public async Task<IActionResult> DeleteCountry(int countryId)
+        {
+            var countryExists = await countryRepository.CountryExists(countryId);
+
+            if (!countryExists) return NotFound();
+
+            var countryToDelete = await countryRepository.GetCountryById(countryId);
+
+            if (!ModelState.IsValid) return BadRequest();
+
+
+            var countryDeleted = await countryRepository.DeleteCountry(countryToDelete);
+
+            if (!countryDeleted)
+            {
+                ModelState.AddModelError("", "Something went wrong.");
+                return StatusCode(500, ModelState);
+            }
+
+            return NoContent();
+        }
+
     }
 }
